@@ -6,6 +6,14 @@ body {
   margin: 70px 0;
 }
 
+ul {
+  list-style-type: none;
+}
+
+li {
+  display: block;
+}
+
 .chatbar {
   background: tomato;
   border-top: 1px solid black;
@@ -37,7 +45,14 @@ body {
 
 .message {
   display: flex;
+  flex-direction: column;
   padding: 5px;
+}
+
+.message ul {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
 .message.system {

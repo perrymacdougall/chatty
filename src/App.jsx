@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
 import data from "../messages.js";
+import MessageList from './MessageList.jsx';
+import Message from './Message.jsx';
 
 class Navbar extends Component {
   render() {
@@ -11,53 +13,25 @@ class Navbar extends Component {
   }
 }
 
-class Message extends Component {
-  constructor(props) {
-    super(props);
-    const { currentUser, messages } = data;
-    this.name = currentUser.name;
-    // this.messages = messages;
-    // console.log(this.messages);
-  }
-
-  render() {
-    return (
-      <div className='message'>
-        <span className='message-username'>{this.name}</span>
-        <span className='message-content'>{/*this.messages.messages.content*/}</span>
-      </div>
-    );
-  }
-}
-
-class Main extends Component {
-  render() {
-    return (
-      <main className='messages'>
-        <Message />
-      </main>
-    );
-  }
-}
 
 class Footer extends Component {
   constructor(props) {
     super(props);
-    const { currentUser, messages } = data;
-    this.name = currentUser.name;
-    this.messages = messages;
-    console.log(this.messages);
   }
 
   render() {
+    // console.log(this.props.data);
+    const name = this.props.data.currentUser.name;
+
     return (
       <footer className='chatbar'>
-        <input className='chatbar-username' defaultValue={this.name} placeholder='Your name here' />
+        <input className='chatbar-username' defaultValue={name} placeholder='Your name here' />
         <input className='chatbar-message' placeholder='Type your heart out' />
       </footer>
     );
   }
 }
+
 
 class App extends Component {
   constructor(props) {
@@ -69,9 +43,16 @@ class App extends Component {
   }
 
   componentDidMount() {
-
+    console.log('componentDidMount <App />');
     setTimeout(() => {
-      this.setState({ loading: false });
+      // Add a new message to the list of messages in the data store
+      const newMessage = {id: 3, username: 'Michelle', content: 'Hello there!'};
+      const newArrayOfMessages = this.state.data.messages.concat(newMessage);
+      this.state.data.messages = newArrayOfMessages;
+      // Update the state of the app component.
+      // Calling setState will trigger a call to render() in App and all child components.
+      this.setState({ loading: false,
+        data })
     }, 3000);
   }
 
@@ -83,8 +64,8 @@ class App extends Component {
       return (
         <div className='container'>
           <Navbar />
-          <Main />
-          <Footer />
+          <MessageList data={this.state.data}/>
+          <Footer data={this.state.data}/>
         </div>
       );
     }
