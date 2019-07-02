@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import messages from "../messages.js";
+import data from "../messages.js";
 
 class Navbar extends Component {
   render() {
@@ -14,9 +14,10 @@ class Navbar extends Component {
 class Message extends Component {
   constructor(props) {
     super(props);
-    const { currentUser } = messages;
+    const { currentUser, messages } = data;
     this.name = currentUser.name;
-    console.log(this.name);
+    // this.messages = messages;
+    // console.log(this.messages);
   }
 
   render() {
@@ -42,9 +43,10 @@ class Main extends Component {
 class Footer extends Component {
   constructor(props) {
     super(props);
-    const { currentUser } = messages;
+    const { currentUser, messages } = data;
     this.name = currentUser.name;
-    console.log(this.name);
+    this.messages = messages;
+    console.log(this.messages);
   }
 
   render() {
@@ -62,7 +64,7 @@ class App extends Component {
     super(props);
     this.state = {
       loading: true,
-      messages
+      data
     }
   }
 
