@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import data from "../messages.js";
 import MessageList from './MessageList.jsx';
 import Message from './Message.jsx';
+import ChatBar from './ChatBar.jsx';
 
 class Navbar extends Component {
   render() {
@@ -9,25 +10,6 @@ class Navbar extends Component {
       <nav className='navbar'>
         <a href='/' className='navbar-brand'>Chatty</a>
       </nav>
-    );
-  }
-}
-
-
-class Footer extends Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    // console.log(this.props.data);
-    const name = this.props.data.currentUser.name;
-
-    return (
-      <footer className='chatbar'>
-        <input className='chatbar-username' defaultValue={name} placeholder='Your name here' />
-        <input className='chatbar-message' placeholder='Type your heart out' />
-      </footer>
     );
   }
 }
@@ -56,6 +38,16 @@ class App extends Component {
     }, 3000);
   }
 
+  addMessage = (value, username) => {
+    const newMessageId = this.state.data.messages.length + 1;
+    const newMessage = {id: newMessageId, username: username, content: value};
+    const newArrayOfMessages = this.state.data.messages.concat(newMessage);
+    this.state.data.messages = newArrayOfMessages;
+
+    this.setState({ loading: false,
+      data });
+  }
+
   render() {
 
     if (this.state.loading) {
@@ -65,7 +57,7 @@ class App extends Component {
         <div className='container'>
           <Navbar />
           <MessageList data={this.state.data}/>
-          <Footer data={this.state.data}/>
+          <ChatBar data={this.state.data} addMessage={this.addMessage}/>
         </div>
       );
     }
