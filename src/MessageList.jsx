@@ -9,7 +9,7 @@ class MessageList extends Component {
   render() {
     return (
       <main className='messages'>
-          <Message data={this.props.data}/>
+          <Message data={this.props.data} previousUser={this.props.data.previousUser}/>
       </main>
     );
   }

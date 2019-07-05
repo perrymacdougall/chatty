@@ -8,8 +8,18 @@ class ChatBar extends Component {
   handleKeyPress = (e) => {
     if (e.key === 'Enter') {
       const value = this.refs.text.value;
-      const username = this.refs.userName.defaultValue;
-      this.props.addMessage(value, username);
+      const username = this.refs.userName.value;
+      const type = "postMessage";
+      this.props.addMessage(value, username, type);
+    }
+  }
+
+  changeUserName = (e) => {
+    if (e.key === 'Enter') {
+      const newName = this.refs.userName.value;
+      const type = "postNotification";
+      const oldName = this.props.previousUser.name;
+      this.props.nameChange(newName, type, oldName);
     }
   }
 
@@ -17,10 +27,9 @@ class ChatBar extends Component {
     // console.log(this.props.data);
     const name = this.props.data.currentUser.name;
 
-
     return (
       <footer className='chatbar'>
-        <input className='chatbar-username' ref='userName' defaultValue={name} placeholder='Your name here' />
+        <input className='chatbar-username' ref='userName' defaultValue={name} onKeyPress={this.changeUserName} placeholder='Your name here' />
         <input className='chatbar-message' ref='text' onKeyPress={this.handleKeyPress} placeholder='Type your heart out' />
       </footer>
     );

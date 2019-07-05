@@ -46,18 +46,23 @@ class App extends Component {
     //   this.setState({ loading: false,
     //     data })
     // }, 3000);
+
     this.socket.onmessage = (event) => {
       const parsedData = JSON.parse(event.data);
       const messages = this.state.messages.concat(parsedData);
-      this.setState({ messages });
-      console.log(this.state);
+
+      this.setState((prevState, props) => ({
+        messages,
+        previousUser: prevState.currentUser,
+        currentUser: {name: parsedData.username},
+      }));
     }
 
   }
 
-  addMessage = (value, username) => {
+  addMessage = (value, username, type) => {
     const newMessageId = this.state.messages.length + 1;
-    const newMessage = {id: newMessageId, username: username, content: value};
+    const newMessage = {id: newMessageId, type: type, username: username, content: value};
     // const newArrayOfMessages = this.state.data.messages.concat(newMessage);
     // this.state.data.messages = newArrayOfMessages;
 
@@ -68,6 +73,12 @@ class App extends Component {
     this.socket.send(JSON.stringify(newMessage));
   }
 
+  nameChange = (name, type, oldName) => {
+    const newNotification = {type: type, username: name, oldName: oldName};
+
+    this.socket.send(JSON.stringify(newNotification));
+  }
+
   render() {
 
     if (this.state.loading) {
@@ -76,8 +87,8 @@ class App extends Component {
       return (
         <div className='container'>
           <Navbar />
-          <MessageList data={this.state}/>
-          <ChatBar data={this.state} addMessage={this.addMessage}/>
+          <MessageList data={this.state}  />
+          <ChatBar data={this.state} addMessage={this.addMessage} nameChange={this.nameChange} previousUser={this.state.previousUser}/>
         </div>
       );
     }
