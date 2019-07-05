@@ -12,6 +12,7 @@ class Navbar extends Component {
     return (
       <nav className='navbar'>
         <a href='/' className='navbar-brand'>Chatty</a>
+        <span>{this.props.data.numberOfUsers}</span>
       </nav>
     );
   }
@@ -23,6 +24,7 @@ class App extends Component {
     super(props);
     this.state = {
       // loading: true,
+      numberOfUsers: 1,
       currentUser: {name: 'Bob'},
       messages: []
     }
@@ -49,15 +51,22 @@ class App extends Component {
 
     this.socket.onmessage = (event) => {
       const parsedData = JSON.parse(event.data);
-      const messages = this.state.messages.concat(parsedData);
 
-      this.setState((prevState, props) => ({
-        messages,
-        previousUser: prevState.currentUser,
-        currentUser: {name: parsedData.username},
-      }));
+      console.log(parsedData);
+      if (parsedData.type === "postEntry") {
+        this.setState({
+          numberOfUsers: parsedData.clients
+        })
+      } else {
+        const messages = this.state.messages.concat(parsedData);
+        console.log(event.data.type)
+        this.setState((prevState, props) => ({
+          messages,
+          previousUser: prevState.currentUser,
+          currentUser: {name: parsedData.username},
+        }));
+      }
     }
-
   }
 
   addMessage = (value, username, type) => {
@@ -86,7 +95,7 @@ class App extends Component {
     } else {
       return (
         <div className='container'>
-          <Navbar />
+          <Navbar data={this.state} />
           <MessageList data={this.state}  />
           <ChatBar data={this.state} addMessage={this.addMessage} nameChange={this.nameChange} previousUser={this.state.previousUser}/>
         </div>
