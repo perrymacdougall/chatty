@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-// import SocketServer from '../../chatty_server/server.js';
 import data from "../messages.js";
 import MessageList from './MessageList.jsx';
 import Message from './Message.jsx';
@@ -11,16 +10,6 @@ class Navbar extends Component {
   constructor(props) {
     super()
   }
-
-  // componentDidMount() {
-  //   const users = this.props.data.numberOfUsers;
-
-  //   if (users === 1) {
-  //     const label = "user online";
-  //   } else if (users !== 1) {
-  //     const label = "users online";
-  //   }
-  // }
 
   text = () => {
     let result = (this.props.data.numberOfUsers === 1) ? "user" : "users";
@@ -42,7 +31,6 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      // loading: true,
       numberOfUsers: 1,
       previousUser: {name: 'Bob'},
       currentUser: {name: 'Bob'},
@@ -50,7 +38,6 @@ class App extends Component {
     }
     // WebSocket connection
     this.socket = wsClient;
-    this.nameChange = this.nameChange.bind(this);
   }
 
   componentDidMount() {
@@ -59,16 +46,6 @@ class App extends Component {
     }
 
     console.log('componentDidMount <App />');
-    // setTimeout(() => {
-    //   // Add a new message to the list of messages in the data store
-    //   const newMessage = {id: 3, username: 'Michelle', content: 'Hello there!'};
-    //   const newArrayOfMessages = this.state.data.messages.concat(newMessage);
-    //   this.state.data.messages = newArrayOfMessages;
-    //   // Update the state of the app component.
-    //   // Calling setState will trigger a call to render() in App and all child components.
-    //   this.setState({ loading: false,
-    //     data })
-    // }, 3000);
 
     this.socket.onmessage = (event) => {
       const parsedData = JSON.parse(event.data);
@@ -79,11 +56,9 @@ class App extends Component {
         })
       } else {
         const messages = this.state.messages.concat(parsedData);
-        // Change this
+
         this.setState((prevState, props) => ({
-          messages,
-          // previousUser: prevState.currentUser,
-          // currentUser: {name: parsedData.username},
+          messages
         }));
       }
     }
@@ -92,12 +67,6 @@ class App extends Component {
   addMessage = (value, username, type) => {
     const newMessageId = this.state.messages.length + 1;
     const newMessage = {id: newMessageId, type: type, username: username, content: value};
-    // const newArrayOfMessages = this.state.data.messages.concat(newMessage);
-    // this.state.data.messages = newArrayOfMessages;
-
-    // this.setState({ loading: false,
-    //   data
-    // });
 
     this.socket.send(JSON.stringify(newMessage));
   }
@@ -117,18 +86,13 @@ class App extends Component {
   };
 
   render() {
-
-    if (this.state.loading) {
-      return <h1>Loading...</h1>
-    } else {
-      return (
-        <div className='container'>
-          <Navbar data={this.state} />
-          <MessageList data={this.state}  />
-          <ChatBar data={this.state} addMessage={this.addMessage} nameChange={this.nameChange} previousUser={this.state.previousUser}/>
-        </div>
-      );
-    }
+    return (
+      <div className='container'>
+        <Navbar data={this.state} />
+        <MessageList data={this.state}  />
+        <ChatBar data={this.state} addMessage={this.addMessage} nameChange={this.nameChange} previousUser={this.state.previousUser}/>
+      </div>
+    );
   }
 }
 
