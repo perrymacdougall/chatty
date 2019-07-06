@@ -8,11 +8,30 @@ import ChatBar from './ChatBar.jsx';
 const wsClient = new WebSocket('ws://0.0.0.0:3001');
 
 class Navbar extends Component {
+  constructor(props) {
+    super()
+  }
+
+  // componentDidMount() {
+  //   const users = this.props.data.numberOfUsers;
+
+  //   if (users === 1) {
+  //     const label = "user online";
+  //   } else if (users !== 1) {
+  //     const label = "users online";
+  //   }
+  // }
+
+  text = () => {
+    let result = (this.props.data.numberOfUsers === 1) ? "user" : "users";
+    return result;
+  }
+
   render() {
     return (
       <nav className='navbar'>
         <a href='/' className='navbar-brand'>Chatty</a>
-        <span>{this.props.data.numberOfUsers}</span>
+        <span className='navbar-users'>{this.props.data.numberOfUsers} {this.text()} online</span>
       </nav>
     );
   }
@@ -25,11 +44,13 @@ class App extends Component {
     this.state = {
       // loading: true,
       numberOfUsers: 1,
+      previousUser: {name: 'Bob'},
       currentUser: {name: 'Bob'},
       messages: []
     }
     // WebSocket connection
     this.socket = wsClient;
+    this.nameChange = this.nameChange.bind(this);
   }
 
   componentDidMount() {
@@ -52,18 +73,17 @@ class App extends Component {
     this.socket.onmessage = (event) => {
       const parsedData = JSON.parse(event.data);
 
-      console.log(parsedData);
       if (parsedData.type === "postEntry") {
         this.setState({
           numberOfUsers: parsedData.clients
         })
       } else {
         const messages = this.state.messages.concat(parsedData);
-        console.log(event.data.type)
+        // Change this
         this.setState((prevState, props) => ({
           messages,
-          previousUser: prevState.currentUser,
-          currentUser: {name: parsedData.username},
+          // previousUser: prevState.currentUser,
+          // currentUser: {name: parsedData.username},
         }));
       }
     }
@@ -83,10 +103,18 @@ class App extends Component {
   }
 
   nameChange = (name, type, oldName) => {
-    const newNotification = {type: type, username: name, oldName: oldName};
-
-    this.socket.send(JSON.stringify(newNotification));
-  }
+    // Changes previousUser and currentUser
+    this.setState((prevState, props) => ({
+      previousUser: prevState.currentUser,
+      currentUser: {name: name}
+    }), () => {
+          // Creates new notification based on state change
+          const newNotification = {type: type, username: name, oldName: this.state.previousUser.name};
+          console.log(newNotification);
+          this.socket.send(JSON.stringify(newNotification));
+        }
+    );
+  };
 
   render() {
 

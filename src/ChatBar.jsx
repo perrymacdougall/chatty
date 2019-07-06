@@ -17,14 +17,15 @@ class ChatBar extends Component {
   changeUserName = (e) => {
     if (e.key === 'Enter') {
       const newName = this.refs.userName.value;
-      const type = "postNotification";
-      const oldName = this.props.previousUser.name;
-      this.props.nameChange(newName, type, oldName);
+      if ( this.props.data.currentUser.name !== newName) {
+        const type = "postNotification";
+        const oldName = this.props.previousUser.name;
+        this.props.nameChange(newName, type, oldName);
+      }
     }
   }
 
   render() {
-    // console.log(this.props.data);
     const name = this.props.data.currentUser.name;
 
     return (
