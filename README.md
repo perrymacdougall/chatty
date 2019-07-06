@@ -36,5 +36,5 @@ npm run lint
 
 ### Screenshot
 
-Here is a quick vid to show Chatty app in action
-!['Video of Chatty'](https://github.com/perrymacdougall/chatty/blob/master/demo_vid.mov)
+Here is a quick vid to show Chatty app in action. I apologize for the quality of the video.
+!['Video of Chatty'](https://github.com/perrymacdougall/chatty/blob/master/chattyvid.gif)
